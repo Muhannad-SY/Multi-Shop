@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="{{ asset('dashboard/plugins/daterangepicker/daterangepicker.css') }}">
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('dashboard/plugins/summernote/summernote-bs4.min.css') }}">
+    {{-- my all style editing will be in this file --}}
+    <link rel="stylesheet" href="{{asset('dashboard/dist/css/my_style.css')}}">
     @yield('css')
 </head>
 

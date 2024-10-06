@@ -29,6 +29,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::middleware(['auth','role:admin'])->group(function () {
     Route::resource('categories',CategoryController::class);
+    Route::post('/edit/category/status/{category}' , [CategoryController::class , 'setStatus'])->name('category.status');
     Route::resource('product',ProductController::class);
     Route::post('delete/one/product/{image}',[ProductController::class,'destroyOneImage'])->name('delete.one.product');
     Route::get('/orders',[OrderController::class,'index'])->name('orders.index');

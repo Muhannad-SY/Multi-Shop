@@ -23,6 +23,7 @@
                                 <label for="image">Category Image</label>
                                 <input type="file" class="form-control-file" name="category_picture" id="image" accept="image/*" required>
                               </div>
+                              <input type="hidden" name="status" value="1">
                             <button type="submit" class="btn btn-success">Create</button>
                           </form>
                     </div>

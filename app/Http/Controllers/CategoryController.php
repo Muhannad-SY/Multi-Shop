@@ -45,9 +45,8 @@ class CategoryController extends Controller
 
         $category->image()->create(['path' => $image_name]);
 
-        return redirect()->route('categories.index')->with('success','Category created successfully');
-
-    } 
+        return redirect()->route('categories.index')->with('success', 'Category created successfully');
+    }
 
     /**
      * Display the specified resource.
@@ -77,8 +76,8 @@ class CategoryController extends Controller
 
         $category->update($request->all());
 
-        if($request->hasFile('category_picture')) {
-            Storage::delete('public/categories/'.$category->image->path);
+        if ($request->hasFile('category_picture')) {
+            Storage::delete('public/categories/' . $category->image->path);
             $category->image->delete();
             $image = $request->file('category_picture');
             $image_name = time() . '.' . $image->extension();
@@ -86,7 +85,42 @@ class CategoryController extends Controller
             $category->image()->create(['path' => $image_name]);
         }
 
-        return redirect()->route('categories.index')->with('success','Category updated successfully');
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully');
+    }
+
+    public function setStatus(Request $request, Category $category)
+    {
+        // return $request;
+
+        if ($request->status == 1) {
+            $category->update([
+                'status' => 1
+            ]);
+            return redirect()
+                ->back()
+                ->with('success', 'Category Became ' . 'Active');
+        } elseif ($request->status == 2) {
+            $category->update([
+                'status' => 2
+            ]);
+            return redirect()
+                ->back()
+                ->with('success', 'Category Became ' . 'Featuerd');
+        }elseif($request->regular_status == 1){
+            $category->update([
+                'status' => 1
+            ]);
+            return redirect()
+                ->back()
+                ->with('warning', 'Category Became ' . 'Not     Featuerd');
+        }else{
+            $category->update([
+                'status' => 0
+            ]);
+            return redirect()
+                ->back()
+                ->with('warning', 'Category Became ' . 'Inactive');
+        }
     }
 
     /**
@@ -94,9 +128,9 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        Storage::delete('public/categories/'.$category->image->path);
+        Storage::delete('public/categories/' . $category->image->path);
         $category->image->delete();
         $category->delete();
-        return redirect()->back()->with('success','Category deleted successfully');
+        return redirect()->back()->with('success', 'Category deleted successfully');
     }
 }
