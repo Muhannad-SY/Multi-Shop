@@ -16,7 +16,7 @@
                         <table id="categories-table" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Popul.</th>
+                                    <th>FEATC..</th>
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Created At</th>
@@ -48,6 +48,7 @@
                                                 id="activity-form{{$loop->index}}">
                                                 @csrf
                                                 <div class="custom-control custom-switch">
+
                                                     <input type="checkbox" class="custom-control-input" value="1"
                                                         {{ $category->status >= 1 ? 'checked' : null }} name="status"
                                                         id="customSwitch1{{$loop->index}}" onclick="document.getElementById('activity-form{{$loop->index}}').submit()">
@@ -55,7 +56,6 @@
                                                         for="customSwitch1{{$loop->index}}">{{ $category->status == true ? 'Active' : 'Inactive' }}</label>
                                                 </div>
                                             </form>
-
                                         </td>
                                         <td>
                                             <a href="{{ route('categories.edit', $category) }}"

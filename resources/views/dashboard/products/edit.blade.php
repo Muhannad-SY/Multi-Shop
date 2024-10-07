@@ -23,14 +23,23 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Product Descraption</label>
-                                <input type="text" class="form-control" value="{{ $product->description }}"
-                                    name="description" required id="exampleInputPassword1">
+                                <textarea rows="2" type="text" class="form-control" 
+                                    name="description" required id="exampleInputPassword1">{{ $product->description }}</textarea>
                             </div>
-
+                            <div class="form-group">
+                                <label for="exampleInputPassword1t">Product Inside-Descraption</label>
+                                <textarea type="text" class="form-control" rows="5" name="in_description" 
+                                required id="exampleInputPassword1t">{{ $product->in_description }}</textarea>
+                            </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Product Price</label>
                                 <input type="number" class="form-control" value="{{ $product->price }}" name="price"
                                     required id="exampleInputPassword1">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Product Dis-Count Price</label>
+                                <input type="number" class="form-control" value="{{$product->discount_price}}" 
+                                    name="discount_price" id="exampleInputPassword1">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Product Stock</label>
