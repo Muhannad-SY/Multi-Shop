@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +31,11 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::middleware(['auth','role:admin'])->group(function () {
     Route::resource('categories',CategoryController::class);
+    Route::resource('coupon',CouponController::class);
+    Route::get('/all/review',[ReviewController::class , 'index'])->name('review.index');
+    Route::get('/panding/review',[ReviewController::class , 'panding'])->name('review.panding');
+    Route::put('/accept/panding/review/{id}',[ReviewController::class , 'accept'])->name('review.accept');
+    Route::delete('/delete/panding/review/{id}',[ReviewController::class , 'delete'])->name('review.delete');
     Route::post('/edit/category/status/{category}' , [CategoryController::class , 'setStatus'])->name('category.status');
     Route::post('/edit/product/status/{product}' , [ProductController::class , 'setStatus'])->name('product.status');
     Route::resource('product',ProductController::class);

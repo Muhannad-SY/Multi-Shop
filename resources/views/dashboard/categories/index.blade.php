@@ -73,10 +73,12 @@
                             </tbody>
                             <tfoot>
                                 <tr>
+                                    <th>Feat..</th>
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
+                                    <th>Activity</th>
                                     <th>Actions</th>
                                 </tr>
                             </tfoot>

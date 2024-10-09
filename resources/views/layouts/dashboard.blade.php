@@ -89,13 +89,13 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
 
-                        <li class="nav-header">Categories Management</li>
+                        <li class="nav-header">Category Management</li>
 
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-copy"></i>
                                 <p>
-                                    Categories
+                                    Category
                                     <i class="fas fa-angle-left right"></i>
                                     {{-- <span class="badge badge-info right">6</span> --}}
                                 </p>
@@ -116,13 +116,13 @@
                             </ul>
                         </li>
 
-                        <li class="nav-header">Products Management</li>
+                        <li class="nav-header">Product Management</li>
 
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-copy"></i>
                                 <p>
-                                    Products
+                                    Product
                                     <i class="fas fa-angle-left right"></i>
                                     {{-- <span class="badge badge-info right">6</span> --}}
                                 </p>
@@ -142,7 +142,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-header">Orders Management</li>
+                        <li class="nav-header">Order Management</li>
                         <li class="nav-item">
                             <a href="{{route('orders.index')}}" class="nav-link">
                                 <i class="nav-icon fas fa-copy"></i>
@@ -153,6 +153,58 @@
                                 </p>
                             </a>
                             
+                        </li>
+                        <li class="nav-header">Coupon Management</li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-copy"></i>
+                                <p>
+                                    Coupon
+                                    <i class="fas fa-angle-left right"></i>
+                                    {{-- <span class="badge badge-info right">6</span> --}}
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('coupon.index') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>All Coupon</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('coupon.create') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Create New</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-header">Review Management</li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-copy"></i>
+                                <p>
+                                    Review
+                                    <i class="fas fa-angle-left right"></i>
+                                    {{-- <span class="badge badge-info right">6</span> --}}
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('review.index') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>All Reviews</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('review.panding') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Panding Review</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </nav>
