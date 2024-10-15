@@ -40,7 +40,7 @@ class ProductController extends Controller
             'price' => 'required|int',
             'discount_price' => 'sometimes',
             'stock' => 'required|string',
-            'product_images.*' => 'required|image|mimes:png,jpg',
+            'product_images.*' => 'required|image|mimes:png,jpg,jpeg',
         ]);
 
         $product = Product::create($request->all());
@@ -83,7 +83,7 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|int',
             'stock' => 'required|string',
-            'product_images.*' => 'sometimes|required|image|mimes:png,jpg',
+            'product_images.*' => 'sometimes|required|image|mimes:png,jpg,jpeg',
             // max:2048|',
         ]);
         $product->update($request->all());

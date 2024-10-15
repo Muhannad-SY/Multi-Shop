@@ -8,6 +8,7 @@ use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,12 +22,12 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('home');
 });
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('verified');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 Route::middleware(['auth','role:admin'])->group(function () {
@@ -43,6 +44,18 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::get('/orders',[OrderController::class,'index'])->name('orders.index');
     Route::get('/order/{order}',[OrderController::class,'show'])->name('order.show');
 });
+
+
+Route::get('/category/show/{category}' , [CategoryController::class , 'show'])->name('category.show');
+Route::middleware(['auth','role:customer'])->group(function () {
+    
+});
+// route to make a cokie for the product ( add to cart fucntion )
+// Route::get('/add_product_to_cart' , function (){
+//      Cookie::make('id' , '1005' , 0.5);
+//      $cookie = Cookie::get('id');
+//     var_dump( json_decode($cookie)) ;
+// })->name('cookie.new');
 
 
 // Verification customer route
