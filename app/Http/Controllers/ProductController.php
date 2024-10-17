@@ -60,9 +60,14 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Product $prod)
     {
-        //
+        $categories = Category::all();
+        $product = Product::withCount('reviews')->with('reviews' , function ($query){
+            $query->where('status' , 2);
+        })->where('id' , $prod->id)->first();
+        // return $product;
+        return view('theme.product.details' , compact('categories' , 'product'));   
     }
 
     /**

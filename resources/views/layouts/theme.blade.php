@@ -89,7 +89,7 @@
                     id="navbar-vertical" style="width: calc(100% - 30px); z-index: 999;">
                     <div class="navbar-nav w-100">
                         @foreach ($categories as $category)
-                            <a href="" class="nav-item nav-link">{{ $category->name }}</a>
+                            <a href="{{route('category.show' , $category)}}" class="nav-item nav-link">{{ $category->name }}</a>
                         @endforeach
                     </div>
                 </nav>
@@ -105,7 +105,7 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="index.html" class="nav-item nav-link active">Home</a>
+                            <a href="{{route('home')}}" class="nav-item nav-link active">Home</a>
                             <a href="shop.html" class="nav-item nav-link">Products</a>
                             <a href="detail.html" class="nav-item nav-link">Categories</a>
 

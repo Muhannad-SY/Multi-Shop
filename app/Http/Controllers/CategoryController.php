@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -53,8 +54,49 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        $filter_case = 0;
+        $categories = Category::withCount('products')
+                    ->where('status', '>=' , 1) // Filter categories with status = 1
+                    ->get();
+                // $products = Product::withCount('order__details')
+                // ->where('status' , '>=' , 1)->get();
+                
+        return view('theme.category.show' , compact('category' , 'categories' , 'filter_case'));
     }
+
+    // for filterd data
+    public function filterd(Category $category, Request $request)
+{
+    $products = $category->products();
+    $categories = Category::withCount('products')
+                    ->where('status', '>=' , 1) // Filter categories with status = 1
+                    ->get();
+    $filter_case = 1;
+    $products = $products->when($request->p == 1, function ($query) {
+        return $query->where('price', '<', 100);
+    })
+    ->when($request->p == 2, function ($query) {
+        return $query->whereBetween('price', [100, 300]);
+    })
+    ->when($request->p == 3, function ($query) {
+        return $query->whereBetween('price', [300, 800]);
+    })
+    ->when($request->p == 4, function ($query) {
+        return $query->whereBetween('price', [800, 1000]);
+    })
+    ->when($request->p == 5, function ($query) {
+        return $query->whereBetween('price', [1000, 2000]);
+    })
+    ->when(!$request->p, function ($query) {
+        return $query->where('price', '>', 0); // Default case when no `p` is provided
+    });
+
+    // Fetch the filtered products
+    $products = $products->get();
+
+    return view('theme.category.show', compact('products', 'categories' , 'category' , 'filter_case'));
+}
+
 
     /**
      * Show the form for editing the specified resource.

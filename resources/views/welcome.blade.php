@@ -26,7 +26,7 @@
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
                                         magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                        href="#">Shop Now</a>
+                                        href="{{ route('category.show', $categories[0]) }}">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -41,7 +41,7 @@
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
                                         magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                        href="#">Shop Now</a>
+                                        href="{{ route('category.show', $categories[1]) }}">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
                                         magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                        href="#">Shop Now</a>
+                                        href="{{ route('category.show', $categories[2]) }}">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                     <div class="offer-text">
                         <h6 class="text-white text-uppercase">Save 20%</h6>
                         <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
+                        <a href="{{ route('product.details', $products[0]) }}" class="btn btn-primary">Shop Now</a>
                     </div>
                 </div>
                 <div class="product-offer mb-30" style="height: 200px;">
@@ -79,7 +79,7 @@
                     <div class="offer-text">
                         <h6 class="text-white text-uppercase">Save 20%</h6>
                         <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
+                        <a href="{{ route('product.details', $products[1]) }}" class="btn btn-primary">Shop Now</a>
                     </div>
                 </div>
             </div>
@@ -118,14 +118,15 @@
     </div>
     <!-- Featured End -->
 
-    <!-- Categories Start -->
+    <!-- Featured Categories Start -->
     <div class="container-fluid pt-5">
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span
-                class="bg-secondary pr-3">Categories</span></h2>
+                class="bg-secondary pr-3">Featured Categories</span></h2>
         <div class="row px-xl-5 pb-3">
-            @for ($i = 0; $i < (count($categories) > 8 ? 8 : count($categories)); $i++)
+            @for ($i = 0; $i < count($categories); $i++)
+            @if ($categories[$i]['status'] == 2)
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                    <a class="text-decoration-none" href="">
+                    <a class="text-decoration-none" href="{{ route('category.show', $categories[$i]) }}">
                         <div class="cat-item d-flex align-items-center mb-4">
                             <div class="overflow-hidden" style="width: 150px;height: 100px;object-fit: cover;">
                                 <img class="img-fluid"
@@ -139,6 +140,8 @@
                         </div>
                     </a>
                 </div>
+            @endif
+                
             @endfor
         </div>
     </div>
@@ -164,10 +167,10 @@
                                             class="fa fa-shopping-cart"></i></a>
                                     <a class="btn btn-outline-dark btn-square" href=""><i
                                             class="far fa-heart"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i
-                                            class="fa fa-sync-alt"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i
-                                            class="fa fa-search"></i></a>
+                                    <a class="btn btn-outline-dark btn-square"
+                                        href="{{ route('product.details', $products[$i]) }}"><i
+                                            class="fa fa-eye"></i></a>
+
                                 </div>
                             </div>
                             <div class="text-center py-4">
@@ -226,7 +229,7 @@
                                 <div class="offer-text">
                                     <h6 class="text-white text-uppercase">{{ $products[$i]['name'] }}</h6>
                                     <h3 class="text-white mb-3">Special Offer</h3>
-                                    <a href="" class="btn btn-primary">Shop Now</a>
+                                    <a href="{{ route('product.details', $products[$i]) }}" class="btn btn-primary">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -266,10 +269,9 @@ $populer = 1;
                                         class="fa fa-shopping-cart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-sync-alt"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-search"></i></a>
+                                <a class="btn btn-outline-dark btn-square"
+                                    href="{{ route('product.details', $products[$i]) }}"><i
+                                        class="fa fa-eye"></i></a>
                             </div>
                         </div>
                         <div class="text-center py-4">
@@ -308,6 +310,33 @@ $populer = 1;
 </div>
 <!-- populer Product End -->
 
+
+ <!-- Categories Start -->
+ <div class="container-fluid pt-5">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span
+            class="bg-secondary pr-3">Categories</span></h2>
+    <div class="row px-xl-5 pb-3">
+        @for ($i = 0; $i < (count($categories) > 8 ? 8 : count($categories)); $i++)
+            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                <a class="text-decoration-none" href="{{ route('category.show', $categories[$i]) }}">
+                    <div class="cat-item d-flex align-items-center mb-4">
+                        <div class="overflow-hidden" style="width: 150px;height: 100px;object-fit: cover;">
+                            <img class="img-fluid"
+                                src="{{ asset('storage/categories/' . $categories[$i]['image']['path']) }}"
+                                alt="picture">
+                        </div>
+                        <div class="flex-fill pl-3">
+                            <h6>{{ $categories[$i]['name'] }}</h6>
+                            <small class="text-body">{{ $categories[$i]['products_count'] }} products</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        @endfor
+    </div>
+</div>
+<!-- Categories End -->
+
 <!-- Best Sale Product Start -->
 <div class="container-fluid pt-5 pb-3">
     <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Best Sale
@@ -322,16 +351,13 @@ $populer = 1;
                                 src="{{ asset('storage/products/' . $products[$i]['images'][0]['path']) }}"
                                 alt="">
                             <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square"
-                                    onclick="function (){
-                                }" href=""><i
+                                <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-shopping-cart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-sync-alt"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-search"></i></a>
+                                <a class="btn btn-outline-dark btn-square"
+                                    href="{{ route('product.details', $products[$i]) }}"><i
+                                        class="fa fa-eye"></i></a>
                             </div>
                         </div>
                         <div class="text-center py-4">

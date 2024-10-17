@@ -47,6 +47,8 @@ Route::middleware(['auth','role:admin'])->group(function () {
 
 
 Route::get('/category/show/{category}' , [CategoryController::class , 'show'])->name('category.show');
+Route::post('/category/fillter/{category}' , [CategoryController::class , 'filterd'])->name('category.show.filter');
+Route::get('/product/show/{prod}' , [ProductController::class , 'show'])->name('product.details');
 Route::middleware(['auth','role:customer'])->group(function () {
     
 });
