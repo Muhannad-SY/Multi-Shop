@@ -14,6 +14,7 @@ class Address extends Model
         'adreess',
         'zip_code',
         'title',
+        'default_address'
     ];
     
     public function user(){

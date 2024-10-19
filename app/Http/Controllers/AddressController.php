@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class AddressController extends Controller
@@ -12,8 +13,10 @@ class AddressController extends Controller
      */
     public function index()
     {
-        $addresses = Address::where('user_id',auth()->id())->orderBy('created_at','DESC')->get();
-        return view('addresses.index',compact('addresses'));
+        $categories = Category::all();
+        $addresses = Address::where('user_id', auth()->id())->orderBy('created_at', 'DESC')->get();
+        // return $addresses;
+        return view('theme.address.index', compact('addresses', 'categories'));
     }
 
     /**
@@ -41,7 +44,7 @@ class AddressController extends Controller
             'title' => $request->title,
         ]);
 
-        return redirect()->back()->with('success','Address added successfully');
+        return redirect()->back()->with('success', 'Address added successfully');
     }
 
     /**
@@ -58,6 +61,7 @@ class AddressController extends Controller
     public function edit(Address $address)
     {
         //
+        // return view('theme.address.edit', compact('address'))
     }
 
     /**
@@ -76,7 +80,7 @@ class AddressController extends Controller
             'title' => $request->title,
         ]);
 
-        return redirect()->back()->with('success','Address updated successfully');
+        return redirect()->back()->with('success', 'Address updated successfully');
     }
 
     /**
@@ -85,6 +89,39 @@ class AddressController extends Controller
     public function destroy(Address $address)
     {
         $address->delete();
-        return redirect()->back()->with('success','Address deleted successfully');
+        return redirect()->back()->with('success', 'Address deleted successfully');
+    }
+
+    public function editDefLocation(Address $address, Request $request)
+    {
+        // 1- bring all addresses
+        $addresses = Address::where('user_id', $address->user_id)->get();
+        // return $addresses;
+        // 2- maken if condation to know if Weather there is key in request
+        // as name defalt-location then Continue or retrun as wrorning failed the function
+        if ($request->default_address != null) {
+            // 3- make a for loop to know if one of these addresses have def status as true you
+            // will make it false and save it then breake the loop
+            foreach ($addresses as $query) {
+                if ($query->default_address == 1) {
+                    $query->update([
+                        'default_address' => 0,
+                    ]);
+                    break;
+                }
+            }
+        } else {
+            return redirect()->back()->with('warning', 'you can not disable your single default address');
+        }
+
+        // 4- set the default status as ture to the Specified address.
+        $address->update([
+            'default_address' => 1
+        ]);
+          
+        
+        // 5- redirect to the back page with succece
+        return redirect()->back()->with('success', 'Set Default Address');
+
     }
 }

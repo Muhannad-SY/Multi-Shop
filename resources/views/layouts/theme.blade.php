@@ -89,7 +89,8 @@
                     id="navbar-vertical" style="width: calc(100% - 30px); z-index: 999;">
                     <div class="navbar-nav w-100">
                         @foreach ($categories as $category)
-                            <a href="{{route('category.show' , $category)}}" class="nav-item nav-link">{{ $category->name }}</a>
+                            <a href="{{ route('category.show', $category) }}"
+                                class="nav-item nav-link">{{ $category->name }}</a>
                         @endforeach
                     </div>
                 </nav>
@@ -105,7 +106,7 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="{{route('home')}}" class="nav-item nav-link active">Home</a>
+                            <a href="{{ route('home') }}" class="nav-item nav-link active">Home</a>
                             <a href="shop.html" class="nav-item nav-link">Products</a>
                             <a href="detail.html" class="nav-item nav-link">Categories</a>
 
@@ -134,6 +135,9 @@
                                             {{ Auth::user()->name }}
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right">
+                                            <a href="{{ route('address.index') }}" class="dropdown-item">
+                                                Addresses
+                                            </a>
                                             <a href="{{ route('logout') }}"
                                                 onclick="event.preventDefault();
                                                                  document.getElementById('logout-form').submit();"
@@ -145,6 +149,7 @@
                                                 class="d-none">
                                                 @csrf
                                             </form>
+
                                         </div>
                                     </li>
                                 </ul>
@@ -236,7 +241,7 @@
                     by
                     <a class="text-primary" href="https://htmlcodex.com">HTML Codex</a>
                 </p>
-                 <div class="col-md-6 px-xl-0 text-center text-md-right">
+                <div class="col-md-6 px-xl-0 text-center text-md-right">
                     <img class="img-fluid" src="img/payments.png" alt="">
                 </div>
             </div>
@@ -252,9 +257,8 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
         <script src="{{ asset('theme/lib/easing/easing.min.js') }}"></script>
         <script src="{{ asset('theme/lib/owlcarousel/owl.carousel.min.js') }}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- Contact Javascript File -->
         <script src="{{ asset('theme/mail/jqBootstrapValidation.min.js') }}"></script>

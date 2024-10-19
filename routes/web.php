@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\OrderController;
@@ -50,7 +51,8 @@ Route::get('/category/show/{category}' , [CategoryController::class , 'show'])->
 Route::post('/category/fillter/{category}' , [CategoryController::class , 'filterd'])->name('category.show.filter');
 Route::get('/product/show/{prod}' , [ProductController::class , 'show'])->name('product.details');
 Route::middleware(['auth','role:customer'])->group(function () {
-    
+    Route::resource('address' , AddressController::class );
+    Route::post('/make/address/def/{address}' , [AddressController::class , 'editDefLocation'] )->name('make.address.default');
 });
 // route to make a cokie for the product ( add to cart fucntion )
 // Route::get('/add_product_to_cart' , function (){
