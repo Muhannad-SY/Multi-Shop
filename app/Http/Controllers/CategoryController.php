@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
@@ -49,19 +50,29 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Category created successfully');
     }
 
+    // function to view all active categories
+    public function shopCategories(){
+        $categories = Category::where('status' , '>' , 0)->withCount('products')->get();
+        $cart = json_decode(Cookie::get('cart', '[]') , true);
+
+        return view('theme.category.index' , compact('categories' , 'cart'));
+        
+    }
+
     /**
      * Display the specified resource.
      */
     public function show(Category $category)
     {
+        $cart = json_decode(Cookie::get('cart', '[]') , true);
+
         $filter_case = 0;
+
         $categories = Category::withCount('products')
-                    ->where('status', '>=' , 1) // Filter categories with status = 1
+                    ->where('status', '>' , 0) // Filter categories with status = 1
                     ->get();
-                // $products = Product::withCount('order__details')
-                // ->where('status' , '>=' , 1)->get();
                 
-        return view('theme.category.show' , compact('category' , 'categories' , 'filter_case'));
+        return view('theme.category.show' , compact('category' , 'categories' , 'filter_case' , 'cart'));
     }
 
     // for filterd data
@@ -94,7 +105,10 @@ class CategoryController extends Controller
     // Fetch the filtered products
     $products = $products->get();
 
-    return view('theme.category.show', compact('products', 'categories' , 'category' , 'filter_case'));
+    $cart = json_decode(Cookie::get('cart', '[]') , true);
+
+
+    return view('theme.category.show', compact('products', 'categories' , 'category' , 'filter_case' , 'cart'));
 }
 
 

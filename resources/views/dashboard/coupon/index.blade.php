@@ -30,7 +30,7 @@
                                         
                                         <td>{{ $coupon->id }}</td>
                                         <td>{{ $coupon->coupon }}</td>
-                                        <td>%{{ $coupon->discount_amount }}</td>                                       
+                                        <td>${{ $coupon->discount_amount }}</td>                                       
                                         <td>
                                             <form action="{{ route('coupon.destroy', $coupon) }}" method="POST"
                                                 {{-- style="display: inline-block;" --}}

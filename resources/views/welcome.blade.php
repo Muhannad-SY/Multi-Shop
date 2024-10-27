@@ -120,28 +120,27 @@
 
     <!-- Featured Categories Start -->
     <div class="container-fluid pt-5">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span
-                class="bg-secondary pr-3">Featured Categories</span></h2>
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Featured
+                Categories</span></h2>
         <div class="row px-xl-5 pb-3">
             @for ($i = 0; $i < count($categories); $i++)
-            @if ($categories[$i]['status'] == 2)
-                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                    <a class="text-decoration-none" href="{{ route('category.show', $categories[$i]) }}">
-                        <div class="cat-item d-flex align-items-center mb-4">
-                            <div class="overflow-hidden" style="width: 150px;height: 100px;object-fit: cover;">
-                                <img class="img-fluid"
-                                    src="{{ asset('storage/categories/' . $categories[$i]['image']['path']) }}"
-                                    alt="picture">
+                @if ($categories[$i]['status'] == 2)
+                    <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                        <a class="text-decoration-none" href="{{ route('category.show', $categories[$i]) }}">
+                            <div class="cat-item d-flex align-items-center mb-4">
+                                <div class="overflow-hidden" style="width: 150px;height: 100px;object-fit: cover;">
+                                    <img class="img-fluid"
+                                        src="{{ asset('storage/categories/' . $categories[$i]['image']['path']) }}"
+                                        alt="picture">
+                                </div>
+                                <div class="flex-fill pl-3">
+                                    <h6>{{ $categories[$i]['name'] }}</h6>
+                                    <small class="text-body">{{ $categories[$i]['products_count'] }} products</small>
+                                </div>
                             </div>
-                            <div class="flex-fill pl-3">
-                                <h6>{{ $categories[$i]['name'] }}</h6>
-                                <small class="text-body">{{ $categories[$i]['products_count'] }} products</small>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            @endif
-                
+                        </a>
+                    </div>
+                @endif
             @endfor
         </div>
     </div>
@@ -161,9 +160,7 @@
                                     src="{{ asset('storage/products/' . $products[$i]['images'][0]['path']) }}"
                                     alt="">
                                 <div class="product-action">
-                                    <a class="btn btn-outline-dark btn-square"
-                                        onclick="function (){
-                                    }" href=""><i
+                                    <a class="btn btn-outline-dark btn-square" onclick="" href=""><i
                                             class="fa fa-shopping-cart"></i></a>
                                     <a class="btn btn-outline-dark btn-square" href=""><i
                                             class="far fa-heart"></i></a>
@@ -190,16 +187,22 @@
 
                                 </div>
                                 <div class="d-flex align-items-center justify-content-center mb-1">
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small>({{ $products[$i]['order__details_count'] }})</small>
+                                    @php
+                                        $numForClassName = $products[$i]['id'] . rand(0, 99);
+                                    @endphp
+                                    <button
+                                        class="btn btn-warning btn-sm add-to-cart-{{ $numForClassName }} {{ in_array($products[$i]['id'], array_column($cart['products'] ?? [], 'product_id')) ? 'btn-danger' : 'btn-warning' }}"
+                                        onclick="handleAddToCart({{ $products[$i]['id'] }},{{ $products[$i]['discount_price'] != null ? $products[$i]['discount_price'] : $products[$i]['price'] }}, 1 ,{{ $numForClassName }})">
+                                        {{ in_array($products[$i]['id'], array_column($cart['products'] ?? [], 'product_id')) ? 'Remove from Cart' : 'Add to Cart' }}
+                                    </button>
                                 </div>
-                                <small style="color: {{ $products[$i]['stock'] <= 100 ? 'red' : 'black' }}">
-                                    {{ $products[$i]['stock'] }}
-                                </small>
+                                <div style="display: flex; gap:20px; justify-content:center ; margin-top:5px">
+                                    <small>sold({{ $products[$i]['order__details_count'] }}) times</small>
+                                    {!! $products[$i]['stock'] <= 100
+                                        ? '<small style="color: red">left count' . $products[$i]['stock'] . '</small>'
+                                        : '' !!}
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -229,7 +232,8 @@
                                 <div class="offer-text">
                                     <h6 class="text-white text-uppercase">{{ $products[$i]['name'] }}</h6>
                                     <h3 class="text-white mb-3">Special Offer</h3>
-                                    <a href="{{ route('product.details', $products[$i]) }}" class="btn btn-primary">Shop Now</a>
+                                    <a href="{{ route('product.details', $products[$i]) }}" class="btn btn-primary">Shop
+                                        Now</a>
                                 </div>
                             </div>
                         </div>
@@ -251,7 +255,7 @@ $populer = 1;
     <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Populer
             Products</span></h2>
     <div class="row px-xl-5">
-        @for ($i = 0; $i < (count($products) > 8 ? 8 : count($products)); $i++)
+        @for ($i = 0; $i < count($products); $i++)
             @if (($products[$i]['status'] == 3 || $products[$i]['status'] == 4) && $populer < 8)
                 <?php
                 $populer++;
@@ -291,16 +295,21 @@ $populer = 1;
 
                             </div>
                             <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small>({{ $products[$i]['order__details_count'] }})</small>
+                                @php
+                                    $numForClassName = $products[$i]['id'] . rand(0, 99);
+                                @endphp
+                                <button
+                                    class="btn btn-warning btn-sm add-to-cart-{{ $numForClassName }} {{ in_array($products[$i]['id'], array_column($cart['products'] ?? [], 'product_id')) ? 'btn-danger' : 'btn-warning' }}"
+                                    onclick="handleAddToCart({{ $products[$i]['id'] }},{{ $products[$i]['discount_price'] != null ? $products[$i]['discount_price'] : $products[$i]['price'] }}, 1 , {{ $numForClassName }})">
+                                    {{ in_array($products[$i]['id'], array_column($cart['products'] ?? [], 'product_id')) ? 'Remove from Cart' : 'Add to Cart' }}
+                                </button>
                             </div>
-                            <small style="color: {{ $products[$i]['stock'] <= 100 ? 'red' : 'black' }}">
-                                {{ $products[$i]['stock'] }}
-                            </small>
+                            <div style="display: flex; gap:20px; justify-content:center ; margin-top:5px">
+                                <small>sold({{ $products[$i]['order__details_count'] }}) times</small>
+                                {!! $products[$i]['stock'] <= 100
+                                    ? '<small style="color: red">left count' . $products[$i]['stock'] . '</small>'
+                                    : '' !!}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -311,8 +320,8 @@ $populer = 1;
 <!-- populer Product End -->
 
 
- <!-- Categories Start -->
- <div class="container-fluid pt-5">
+<!-- Categories Start -->
+<div class="container-fluid pt-5">
     <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span
             class="bg-secondary pr-3">Categories</span></h2>
     <div class="row px-xl-5 pb-3">
@@ -377,16 +386,21 @@ $populer = 1;
 
                             </div>
                             <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small>({{ $products[$i]['order__details_count'] }})</small>
+                                @php
+                                    $numForClassName = $products[$i]['id'] . rand(0, 99);
+                                @endphp
+                                <button
+                                    class="btn btn-warning btn-sm add-to-cart-{{ $numForClassName }} {{ in_array($products[$i]['id'], array_column($cart['products'] ?? [], 'product_id')) ? 'btn-danger' : 'btn-warning' }}"
+                                    onclick="handleAddToCart({{ $products[$i]['id'] }},{{ $products[$i]['discount_price'] != null ? $products[$i]['discount_price'] : $products[$i]['price'] }}, 1 , {{ $numForClassName }})">
+                                    {{ in_array($products[$i]['id'], array_column($cart['products'] ?? [], 'product_id')) ? 'Remove from Cart' : 'Add to Cart' }}
+                                </button>
                             </div>
-                            <small style="color: {{ $products[$i]['stock'] <= 100 ? 'red' : 'black' }}">
-                                {{ $products[$i]['stock'] }}
-                            </small>
+                            <div style="display: flex; gap:20px; justify-content:center ; margin-top:5px">
+                                <small>sold({{ $products[$i]['order__details_count'] }}) times</small>
+                                {!! $products[$i]['stock'] <= 100
+                                    ? '<small style="color: red">left count' . $products[$i]['stock'] . '</small>'
+                                    : '' !!}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -400,26 +414,52 @@ $populer = 1;
 @endsection
 
 @section('js')
-{{-- 
-    <script>
-        function setProductCookie(product) {
-            $.ajax({
-                url: '/set-product-cookie', // Laravel route
-                method: 'POST',
-                data: {
-                    product: product, // Send the new product to be added
-                    _token: "{{ csrf_token() }}" // CSRF token for security
-                },
-                success: function(response) {
-                    if (response.success) {
-                        console.log('Product added to cookie:', response.products);
-                    }
-                },
-                error: function(error) {
-                    console.log('Error setting product cookie:', error);
-                }
-            });
+<script >
+// function to add and remove products from cart in 
+
+// {   the home page and products page    } 
+function handleAddToCart(id, price, count , index) {
+
+var button = $('.add-to-cart-' + index);
+
+if (button.text().trim() === 'Add to Cart') {
+    $.ajax({
+        url: '{{ route("cart.add") }}',
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            product_id: id,
+            product_price: price,
+            product_count: count, 
+        },
+        success: function(res) {
+            $('#cart-item-counter').text(++res.cart.products.length);
+            button.removeClass('btn-warning').addClass('btn-danger');
+            button.text('Remove from Cart');
         }
-    </script> --}}
+    });
+} else {
+    $.ajax({
+        url: '{{ route("cart.remove") }}',
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            product_id: id
+        },
+        success: function(res) {
+            $('#cart-item-counter').text(--res.cart.products.length);
+            button.removeClass('btn-danger').addClass('btn-warning');
+            button.text('Add to Cart');
+        }
+    });
+}
+} // end of the function
+
+</script>
+<script>
+    $(document).ready(function() {
+
+    })
+</script>
 
 @endsection

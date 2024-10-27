@@ -66,15 +66,20 @@
                                     <i class="fa fa-minus"></i>
                                 </button>
                             </div>
-                            <input type="text" class="form-control bg-secondary border-0 text-center" value="1">
+                            {{-- /////////////////////////////////////// --}}
+                            <input type="text" id="stock-input" class="form-control bg-secondary border-0 text-center"
+                                value="1">
                             <div class="input-group-btn">
                                 <button class="btn btn-primary btn-plus">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To
-                            Cart</button>
+                        <button
+                            class="btn btn-warning btn-sm add-to-cart-{{ $product->id }} {{ in_array($product->id, array_column($cart['products'] ?? [], 'product_id')) ? 'btn-danger' : 'btn-warning' }}"
+                            onclick="handleAddToCart({{ $product->id }},{{ $product->discount_price != null ? $product->discount_price : $product->price }}, 1 , {{ $product->id }})">
+                            {{ in_array($product->id, array_column($cart['products'] ?? [], 'product_id')) ? 'Remove from Cart' : 'Add to Cart' }}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -97,28 +102,29 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     @foreach ($product->reviews as $review)
-                                        <h4 class="mb-4">{{$loop->index + 1}} review for "Product Name"</h4>
+                                        <h4 class="mb-4">{{ $loop->index + 1 }} review for "Product Name"</h4>
                                         <div class="media mb-4">
                                             <img src="{{ asset('theme/img/user.jpg') }}" alt="Image"
                                                 class="img-fluid mr-3 mt-1" style="width: 45px;">
                                             <div class="media-body">
-                                                <h6>{{$review->user->name}}<small> - <i>{{$review->created_at->diffForHumans()}}</i></small></h6>
+                                                <h6>{{ $review->user->name }}<small> -
+                                                        <i>{{ $review->created_at->diffForHumans() }}</i></small></h6>
                                                 <div class="text-primary mb-2">
                                                     @for ($i = 0; $i < 5; $i++)
                                                         @if ($i < $review->stars)
                                                             <i class="fas fa-star"></i>
                                                         @else
-                                                        <i class="far fa-star"></i>
+                                                            <i class="far fa-star"></i>
                                                         @endif
                                                     @endfor
                                                 </div>
-                                                <p>{{$review->body}}</p>
+                                                <p>{{ $review->body }}</p>
                                             </div>
                                         </div>
                                     @endforeach
 
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -127,6 +133,69 @@
         </div>
     </div>
     <!-- Shop Detail End -->
+@endsection
+
+@section('js')
+
+    <script>
+        $(document).ready(function() {
+            
+            $('.btn-plus').on('click', function() {
+                var counter = parseInt($('#stock-input').val());
+                if (counter <  {{$product->stock}}) {
+                $('#stock-input').val(counter + 1);
+                }
+            });
+            $('.btn-minus').on('click', function() {
+                var counter = parseInt($('#stock-input').val());
+                if (counter > 1) {
+                $('#stock-input').val(counter - 1);
+                }
+            });
+        })
+    </script>
+    <script>
+        // function to add and remove products from cart in 
+
+        // {   the home page and products page    } 
+        function handleAddToCart(id, price, count, index) {
+
+            var button = $('.add-to-cart-' + index);
+
+            if (button.text().trim() === 'Add to Cart') {
+                var counter = parseInt($('#stock-input').val());
+                $.ajax({
+                    url: '{{ route('cart.add') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        product_id: id,
+                        product_price: price,
+                        product_count: counter,
+                    },
+                    success: function(res) {
+                        $('#cart-item-counter').text(++res.cart.products.length);
+                        button.removeClass('btn-warning').addClass('btn-danger');
+                        button.text('Remove from Cart');
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '{{ route('cart.remove') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        product_id: id
+                    },
+                    success: function(res) {
+                        $('#cart-item-counter').text(--res.cart.products.length);
+                        button.removeClass('btn-danger').addClass('btn-warning');
+                        button.text('Add to Cart');
+                    }
+                });
+            }
+        } // end of the function
+    </script>
 
 
 @endsection

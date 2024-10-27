@@ -1,6 +1,6 @@
 @extends('layouts.theme')
 
-@section('page-title', 'Show Category')
+@section('page-title', 'Shop')
 
 @section('content')
 
@@ -13,7 +13,7 @@
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by
                         price</span></h5>
                 <div class="bg-light p-4 mb-30">
-                    <form action="{{ route('category.show.filter', $category) }}" method="GET" id="filter-form">
+                    <form action="{{ route('products.price.filter.shop') }}" method="GET" id="filter-product-price">
                         @csrf
                         <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
                             <input type="radio" name="p" value="1" class="custom-control-input" id="price-1">
@@ -49,7 +49,7 @@
             <div class="col-lg-9 col-md-8">
                 <div class="row pb-3">
                     @if ($filter_case == 0)
-                        @foreach ($category->products as $product)
+                        @foreach ($products as $product)
                             {{-- here will be the Normal peace without filter. --}}
                             <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
                                 <div class="product-item bg-light mb-4">
@@ -97,7 +97,7 @@
                         @endforeach
                     @elseif($filter_case == 1)
                         {{-- Here will be the filtered cases. --}}
-                        @if (count($products) < 1)
+                        @if ($products->isEmpty())
                             <div class="col-12 pb-1">
                                 <h3>NO Result</h3>
                             </div>
@@ -114,10 +114,9 @@
                                                         class="fa fa-shopping-cart"></i></a>
                                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                                         class="far fa-heart"></i></a>
-                                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                                        class="fa fa-sync-alt"></i></a>
-                                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                                        class="fa fa-search"></i></a>
+                                                        <a class="btn btn-outline-dark btn-square"
+                                                        href="{{ route('product.details', $product) }}"><i
+                                                            class="fa fa-eye"></i></a>
                                             </div>
                                         </div>
                                         <div class="text-center py-4">
@@ -173,7 +172,7 @@
         let price3 = document.getElementById('price-3');
         let price4 = document.getElementById('price-4');
         let price5 = document.getElementById('price-5');
-        let filter = document.getElementById('filter-form');
+        let filter = document.getElementById('filter-product-price');
 
         price1.onclick = function() {
             filter.submit();

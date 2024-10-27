@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -29,7 +31,17 @@ Route::get('/', function () {
 Auth::routes(['verify' => true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
+Route::get('/product/all' , [ProductController::class , 'shop'])->name('products.shop');
+Route::get('/product/fillter/all' , [ProductController::class , 'filter'])->name('products.price.filter.shop');
+Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('/remove-from-cart', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::get('/category/show/{category}' , [CategoryController::class , 'show'])->name('category.show');
+Route::get('/categories/shop' , [CategoryController::class , 'shopCategories'])->name('category.shop');
+Route::get('/category/fillter/{category}' , [CategoryController::class , 'filterd'])->name('category.show.filter');
+Route::get('/product/show/{prod}' , [ProductController::class , 'show'])->name('product.details');
+Route::get('/cart' , [CartController::class , 'index'])->name('cart.index');
+Route::get('/edit/cart/product/count' , [CartController::class , 'editProductCountInCart'])->name('cart.edit.count');
+Route::get('/apply/coupon' , [CouponController::class , 'applyCoupon'] )->name('apply.coupon');
 
 Route::middleware(['auth','role:admin'])->group(function () {
     Route::resource('categories',CategoryController::class);
@@ -47,19 +59,11 @@ Route::middleware(['auth','role:admin'])->group(function () {
 });
 
 
-Route::get('/category/show/{category}' , [CategoryController::class , 'show'])->name('category.show');
-Route::post('/category/fillter/{category}' , [CategoryController::class , 'filterd'])->name('category.show.filter');
-Route::get('/product/show/{prod}' , [ProductController::class , 'show'])->name('product.details');
 Route::middleware(['auth','role:customer'])->group(function () {
     Route::resource('address' , AddressController::class );
     Route::post('/make/address/def/{address}' , [AddressController::class , 'editDefLocation'] )->name('make.address.default');
+    Route::resource('/checkout' , CheckoutController::class );
 });
-// route to make a cokie for the product ( add to cart fucntion )
-// Route::get('/add_product_to_cart' , function (){
-//      Cookie::make('id' , '1005' , 0.5);
-//      $cookie = Cookie::get('id');
-//     var_dump( json_decode($cookie)) ;
-// })->name('cookie.new');
 
 
 // Verification customer route

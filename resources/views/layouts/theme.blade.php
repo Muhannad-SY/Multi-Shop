@@ -35,15 +35,11 @@
         <div class="row bg-secondary py-1 px-xl-5">
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center d-block d-lg-none">
-                    <a href="" class="btn px-0 ml-2">
-                        <i class="fas fa-heart text-dark"></i>
-                        <span class="badge text-dark border border-dark rounded-circle"
-                            style="padding-bottom: 2px;">0</span>
-                    </a>
-                    <a href="" class="btn px-0 ml-2">
+
+                    <a href="{{route('cart.index')}}" class="btn px-0 ml-2">
                         <i class="fas fa-shopping-cart text-dark"></i>
                         <span class="badge text-dark border border-dark rounded-circle"
-                            style="padding-bottom: 2px;">0</span>
+                            style="padding-bottom: 2px;">{{ count($cart['products'] ?? []) }}</span>
                     </a>
                 </div>
             </div>
@@ -106,17 +102,21 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="{{ route('home') }}" class="nav-item nav-link active">Home</a>
-                            <a href="shop.html" class="nav-item nav-link">Products</a>
-                            <a href="detail.html" class="nav-item nav-link">Categories</a>
+                            <a href="{{ route('home') }}"
+                                class="nav-item nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+                            <a href="{{ route('products.shop') }}"
+                                class="nav-item nav-link {{ request()->routeIs('products.shop' , 'category.show') ? 'active' : '' }}">Shop</a>
+                            <a href="{{route('category.shop')}}"
+                                class="nav-item nav-link {{ request()->routeIs('category.shop') ? 'active' : '' }}">Categories</a>
 
 
                         </div>
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
-                            <a href="" class="btn px-0 ml-3">
+                            <a href="{{route('cart.index')}}" class="btn px-0 ml-3">
                                 <i class="fas fa-shopping-cart text-primary"></i>
                                 <span class="badge text-secondary border border-secondary rounded-circle"
-                                    style="padding-bottom: 2px;">0</span>
+                                    id="cart-item-counter"
+                                    style="padding-bottom: 2px;">{{ count($cart['products'] ?? []) }}</span>
                             </a>
 
                         </div>

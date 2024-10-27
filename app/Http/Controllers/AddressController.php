@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class AddressController extends Controller
 {
@@ -15,8 +16,9 @@ class AddressController extends Controller
     {
         $categories = Category::all();
         $addresses = Address::where('user_id', auth()->id())->orderBy('created_at', 'DESC')->get();
-        // return $addresses;
-        return view('theme.address.index', compact('addresses', 'categories'));
+        $cart = json_decode(Cookie::get('cart', '[]') , true);
+        
+        return view('theme.address.index', compact('addresses', 'categories' , 'cart'));
     }
 
     /**
@@ -61,7 +63,6 @@ class AddressController extends Controller
     public function edit(Address $address)
     {
         //
-        // return view('theme.address.edit', compact('address'))
     }
 
     /**

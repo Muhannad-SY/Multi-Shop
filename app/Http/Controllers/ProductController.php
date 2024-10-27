@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\Image;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -13,10 +15,54 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
         $products = Product::all();
         return view('dashboard.products.index', compact('products'));
+    }
+
+    public function shop()
+    {
+        $filter_case = 0;
+
+        $products = Product::withCount('order__details')->where('status' , '>' , 0)->get();
+        $categories = Category::where('status' , '>' , 0)->get();
+        $cart = json_decode(Cookie::get('cart', '[]'), true);
+        return view('theme.product.index', compact('products', 'cart' , 'categories' , 'filter_case'));
+    }
+
+    public function filter(Request $request){
+        
+        $categories = Category::where('status' , '>' , 0)->get();
+        $filter_case = 1;
+
+        $products = Product::query();
+        $products = $products->when($request->p == 1, function ($query) {
+            return $query->where('price', '<', 100);
+        })
+        ->when($request->p == 2, function ($query) {
+            return $query->whereBetween('price', [100, 300]);
+        })
+        ->when($request->p == 3, function ($query) {
+            return $query->whereBetween('price', [300, 800]);
+        })
+        ->when($request->p == 4, function ($query) {
+            return $query->whereBetween('price', [800, 1000]);
+        })
+        ->when($request->p == 5, function ($query) {
+            return $query->whereBetween('price', [1000, 2000]);
+        })
+        ->when(!$request->p, function ($query) {
+            return $query->where('price', '>', 0); 
+        });
+    
+        // Fetch the filtered products
+        $products = $products->withCount('order__details')->where('status' , '>' , 0)->get(); 
+    
+        $cart = json_decode(Cookie::get('cart', '[]') , true);
+    
+        return view('theme.product.index', compact('products', 'categories' ,  'filter_case' , 'cart'));
     }
 
     /**
@@ -48,7 +94,7 @@ class ProductController extends Controller
         $images = $request->file('product_images');
 
         foreach ($images as $value) {
-            $image_name = microtime() . rand(0000,9999) .'.' . $value->extension();
+            $image_name = microtime() . rand(0000, 9999) . '.' . $value->extension();
             $value->move(public_path('storage/products/'), $image_name);
 
             $product->images()->create(['path' => $image_name]);
@@ -62,12 +108,19 @@ class ProductController extends Controller
      */
     public function show(Product $prod)
     {
-        $categories = Category::all();
-        $product = Product::withCount('reviews')->with('reviews' , function ($query){
-            $query->where('status' , 2);
-        })->where('id' , $prod->id)->first();
-        // return $product;
-        return view('theme.product.details' , compact('categories' , 'product'));   
+        $categories = Category::where('status' , '>' , 0)->get();
+
+        $cart = json_decode(Cookie::get('cart', '[]'), true);
+
+        $product = Product::withCount('reviews')
+            ->with('reviews', function ($query) {
+                $query->where('status', 2);
+            })
+            ->where('id', $prod->id)
+            ->where('status', '>' , 0)
+            ->first();
+
+        return view('theme.product.details', compact('categories', 'product', 'cart'));
     }
 
     /**
@@ -109,77 +162,75 @@ class ProductController extends Controller
     //TO  update the status of the product
     public function setStatus(Request $request, Product $product)
     {
-        if($product->status == 0 && $request->status > 1){
-            return redirect()
-            ->back()
-            ->with('warning' , "Your Product Is Not Active");
+        if ($product->status == 0 && $request->status > 1) {
+            return redirect()->back()->with('warning', 'Your Product Is Not Active');
         }
-        if($request->status ){
+        if ($request->status) {
             if ($request->status == 1) {
-            $product->update([
-                'status' => 1,
-            ]);
-            return redirect()
-                ->back()
-                ->with('success', 'Product Became ' . 'Active');
-        }elseif ($request->status == 2 && $product->status == 3) {
-            $product->update([
-                'status' => 4,
-            ]);
-            return redirect()
-                ->back()
-                ->with('success', 'Product Became ' . 'Featuerd');
-        }elseif ($request->status == 2 && $product->status == 1) {
-            $product->update([
-                'status' => 2,
-            ]);
-            return redirect()
-                ->back()
-                ->with('success', 'Product Became ' . 'Featuerd');
-        }elseif ($request->status == 3 && $product->status == 1) {
-            $product->update([
-                'status' => 3,
-            ]);
-            return redirect()
-                ->back()
-                ->with('success', 'Product Became ' . 'Popular');
-        }elseif ($request->status == 3 && $product->status == 2) {
-            $product->update([
-                'status' => 4,
-            ]);
-            return redirect()
-                ->back()
-                ->with('success', 'Product Became ' . 'Popular');
-        }
-        }elseif($request->dis == 0){
+                $product->update([
+                    'status' => 1,
+                ]);
+                return redirect()
+                    ->back()
+                    ->with('success', 'Product Became ' . 'Active');
+            } elseif ($request->status == 2 && $product->status == 3) {
+                $product->update([
+                    'status' => 4,
+                ]);
+                return redirect()
+                    ->back()
+                    ->with('success', 'Product Became ' . 'Featuerd');
+            } elseif ($request->status == 2 && $product->status == 1) {
+                $product->update([
+                    'status' => 2,
+                ]);
+                return redirect()
+                    ->back()
+                    ->with('success', 'Product Became ' . 'Featuerd');
+            } elseif ($request->status == 3 && $product->status == 1) {
+                $product->update([
+                    'status' => 3,
+                ]);
+                return redirect()
+                    ->back()
+                    ->with('success', 'Product Became ' . 'Popular');
+            } elseif ($request->status == 3 && $product->status == 2) {
+                $product->update([
+                    'status' => 4,
+                ]);
+                return redirect()
+                    ->back()
+                    ->with('success', 'Product Became ' . 'Popular');
+            }
+        } elseif ($request->dis == 0) {
             $product->update([
                 'status' => 0,
             ]);
             return redirect()
                 ->back()
                 ->with('warning', 'Product Became ' . 'Inactive');
-        }elseif($request->dis == 3 && $product->status == 4){
+        } elseif ($request->dis == 3 && $product->status == 4) {
             $product->update([
                 'status' => 2,
             ]);
             return redirect()
                 ->back()
                 ->with('warning', 'Product Became ' . 'Not Popular');
-        }elseif($request->dis == 3 && $product->status == 3){
+        } elseif ($request->dis == 3 && $product->status == 3) {
             $product->update([
                 'status' => 1,
             ]);
             return redirect()
                 ->back()
                 ->with('warning', 'Product Became ' . 'Not Popular');
-        }elseif($request->dis == 2 && $product->status == 4){
+        } elseif ($request->dis == 2 && $product->status == 4) {
             $product->update([
                 'status' => 3,
             ]);
             return redirect()
                 ->back()
                 ->with('warning', 'Product Became ' . 'Not Featuerd');
-        }elseif($request->dis == 2 && $product->status == 2){
+        } elseif ($request->dis == 2 && $product->status == 2) {
             $product->update([
                 'status' => 1,
             ]);

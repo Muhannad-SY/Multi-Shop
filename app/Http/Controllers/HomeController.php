@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class HomeController extends Controller
 {
@@ -32,19 +33,20 @@ class HomeController extends Controller
                 return view('home');
             } else {
                 $categories = Category::withCount('products')
-                    ->where('status', '>=' , 1) // Filter categories with status = 1
+                    ->where('status', '>', 0) // Filter categories with status = 1
                     ->get();
-                $products = Product::withCount('order__details')
-                ->where('status' , '>=' , 1)->get();
-                return view('welcome', compact('categories', 'products'));
+                $products = Product::withCount('order__details')->where('status', '>', 0)->get();
+                $cart = json_decode(Cookie::get('cart', '[]'), true);
+
+                return view('welcome', compact('categories', 'products' , 'cart'));
             }
         } else {
             $categories = Category::withCount('products')
-                    ->where('status', '>=' , 1) // Filter categories with status = 1
-                    ->get();
-            $products = Product::withCount('order__details')
-            ->where('status' , '>=' , 1)->get();
-            return view('welcome', compact('categories', 'products'));
+                ->where('status', '>', 0) // Filter categories with status = 1
+                ->get();
+            $products = Product::withCount('order__details')->where('status', '>', 0)->get();
+            $cart = json_decode(Cookie::get('cart', '[]'), true);
+            return view('welcome', compact('categories', 'products' , 'cart'));
         }
     }
 }
