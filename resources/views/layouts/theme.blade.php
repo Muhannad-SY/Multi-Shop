@@ -135,6 +135,9 @@
                                             {{ Auth::user()->name }}
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right">
+                                            <a href="{{ route('customer.all.orders') }}" class="dropdown-item">
+                                                My Orders
+                                            </a>
                                             <a href="{{ route('address.index') }}" class="dropdown-item">
                                                 Addresses
                                             </a>

@@ -11,7 +11,7 @@ use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -56,13 +56,25 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::post('delete/one/product/{image}',[ProductController::class,'destroyOneImage'])->name('delete.one.product');
     Route::get('/orders',[OrderController::class,'index'])->name('orders.index');
     Route::get('/order/{order}',[OrderController::class,'show'])->name('order.show');
+
+    // order department
+    Route::put('/create/status/2/{order}',[OrderController::class,'orderInprogress'])->name('order.inprogress');
+    Route::put('/create/status/0/{order}',[OrderController::class,'orderReject'])->name('order.reject');
+    Route::put('/create/status/3/{order}',[OrderController::class,'orderComplated'])->name('order.complated');
+    Route::put('/create/status/4/{order}',[OrderController::class,'orderShippe'])->name('order.shippe');
 });
 
 
 Route::middleware(['auth','role:customer'])->group(function () {
     Route::resource('address' , AddressController::class );
     Route::post('/make/address/def/{address}' , [AddressController::class , 'editDefLocation'] )->name('make.address.default');
-    Route::resource('/checkout' , CheckoutController::class );
+    Route::get('/checkout' , [CheckoutController::class , 'index'] )->name('checkout.index');
+    Route::get('/all/orders' , [OrderController::class , 'myOrders'] )->name('customer.all.orders');
+    Route::get('/show/order/{id}' , [OrderController::class , 'showOrder'] )->name('show.one.order');
+    
+    //order department 
+    Route::post('/create/order',[OrderController::class,'create'])->name('order.create');
+    Route::put('/create/status/5/{order}',[OrderController::class,'orderDone'])->name('order.done');
 });
 
 

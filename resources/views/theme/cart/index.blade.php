@@ -7,7 +7,6 @@
     @php
         $items_count = 0;
         $subtotal = 0;
-        $coupon = $coupon_amaunt ?? 0;
     @endphp
     <!-- Cart Start -->
     <div class="container-fluid">
@@ -98,20 +97,22 @@
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <h6 class="font-weight-medium">Coupun discount</h6>
-                            <h6 class="font-weight-medium" id="coupon">${{ $coupon }}</h6>
+                            <h6 class="font-weight-medium" id="coupon">$0</h6>
                         </div>
 
                     </div>
                     <div class="pt-2">
                         <div class="d-flex justify-content-between mt-2">
                             <h5>Total</h5>
-                            <h5 id="total">${{ $subtotal - ($coupon ?? 0) }}</h5>
+                            <h5 id="total">${{ $subtotal }}</h5>
                         </div>
-                        <a href="{{route('checkout.index')}}">
-                            <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">
+                        <form action="{{route('checkout.index' )}}" method="GET" id="checkout-form">
+                            @csrf
+                            <input type="hidden" name="coupon_amaunt" id="coupon-hid-input" value="0">
+                            <button class="btn btn-block btn-primary font-weight-bold my-3 py-3" id="checkout-btn">
                                 Proceed To Checkout
                             </button>
-                        </a>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -124,6 +125,9 @@
 @section('js')
     <script>
         $(document).ready(function() {
+            $('#checkout-btn').on('click' , function (){
+                $('#checkout-form').submit()
+            });
             $('#coupon-apply-btn').on('click', function() {
                 if ({{ count($cart['products'] ?? []) > 0 }}) {
                     $.ajax({
@@ -136,6 +140,8 @@
                         success: function(response) {
                             $('#coupon').text('$' + response.coupon_amount);
                             $('#total').text('$' + response.new_total);
+                            $('#coupon-hid-input').val(response.coupon_amount);
+                            
                         },
 
                     });
@@ -166,8 +172,6 @@
                     $('#items-subtotal').text('$' + (+items_subtotal - total_item_price));
                     $('#cart-item-counter').text(--res.cart.products.length);
                     $one_cart.css('display', 'none');
-                    // console.log(res.newtotal);
-
                     $('#total').text('$' + res.newtotal)
                 }
             });
