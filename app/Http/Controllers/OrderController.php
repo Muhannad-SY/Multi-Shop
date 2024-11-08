@@ -63,6 +63,10 @@ class OrderController extends Controller
                         'price' => $item['product_price'],
                         'discount_sold' =>  $product->discount_price != null? true :false ,
                     ]);
+                    $prod = Product::find($product->id);
+                    $prod->update([
+                        'stock' => $prod->stock -$item['product_count']
+                    ]);
                 }
             }
         }
@@ -127,7 +131,7 @@ class OrderController extends Controller
         $proIds = array_column(json_decode($ord->order__details) , 'product_id');;
         $products = Product::whereIn('id' , $proIds)->get();
         
-        // Zafer mahallesi. Ağaçeşme sokak. Sabancı AP NO: 13  İç kapı NO: 4. Bahçelievler / istanbul
+        
         $order->update([
             'status' => 5
         ]);

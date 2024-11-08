@@ -34,6 +34,8 @@
                                             <button type="submit" class="btn btn-success">yes</button>
                                         </form>
                                     </div>
+                                @elseif($order->status == 0)
+                                <h5 style="color: red">This order rejected</h5>
                                 @endif
 
                             </div>
@@ -43,6 +45,10 @@
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
+                                    @if ($order->status == 5)
+                                        <th scope="col">Opinion</th>
+                                    @endif
+                                    
                                     <th scope="col">Order ID</th>
                                     <th scope="col">Product Name</th>
                                     <th scope="col">Product Price</th>
@@ -53,6 +59,9 @@
                             <tbody>
                                 @foreach ($orderDetails as $detail)
                                     <tr>
+                                        @if ($order->status == 5)
+                                        <td><a href="{{route('review.create' ,$detail->product->id )}}" class="btn btn-primary">Review</a></td>
+                                       @endif
                                         <td>{{ $detail->order_id }}</td>
                                         <td>{{ $detail->product->name }}</td>
                                         <td>{{ $detail->product->price }}</td>

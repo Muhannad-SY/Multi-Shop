@@ -8,6 +8,7 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
@@ -42,6 +43,9 @@ Route::get('/product/show/{prod}' , [ProductController::class , 'show'])->name('
 Route::get('/cart' , [CartController::class , 'index'])->name('cart.index');
 Route::get('/edit/cart/product/count' , [CartController::class , 'editProductCountInCart'])->name('cart.edit.count');
 Route::get('/apply/coupon' , [CouponController::class , 'applyCoupon'] )->name('apply.coupon');
+Route::get('/search' , [SearchController::class , 'typingTimeSearch'] )->name('type.search');
+Route::get('/show/searched/product/{id}' , [SearchController::class , 'showProductResult'] )->name('search.product.show');
+Route::get('/show/searched/category/{id}' , [SearchController::class , 'showCategoryResult'] )->name('search.category.show');
 
 Route::middleware(['auth','role:admin'])->group(function () {
     Route::resource('categories',CategoryController::class);
@@ -62,6 +66,9 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::put('/create/status/0/{order}',[OrderController::class,'orderReject'])->name('order.reject');
     Route::put('/create/status/3/{order}',[OrderController::class,'orderComplated'])->name('order.complated');
     Route::put('/create/status/4/{order}',[OrderController::class,'orderShippe'])->name('order.shippe');
+
+    // review deparment
+    
 });
 
 
@@ -75,6 +82,11 @@ Route::middleware(['auth','role:customer'])->group(function () {
     //order department 
     Route::post('/create/order',[OrderController::class,'create'])->name('order.create');
     Route::put('/create/status/5/{order}',[OrderController::class,'orderDone'])->name('order.done');
+
+    // review deparment
+    Route::get('/leave/review/{product_id}',[ReviewController::class,'create'])->name('review.create');
+    Route::post('/store/review/{product_id}',[ReviewController::class,'store'])->name('review.store');
+
 });
 
 

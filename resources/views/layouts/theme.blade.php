@@ -28,6 +28,34 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=person" />
     @yield('css')
+    <style>
+        .show-search-box {
+            position: absolute;
+            /* Position it relative to its closest positioned ancestor */
+            top: 50px;
+            margin: 0;
+            padding: 15px;
+            /* Adjust as needed */
+            text-align: center;  
+            /* Adjust as needed */
+            width: 30%;
+            height: flex;
+            background-color: rgb(250, 249, 249);
+            /* Semi-transparent overlay */
+            z-index: 10;
+            /* Higher z-index to stay on top */
+        }
+
+        .list-group-item {
+            padding: 0;
+            border: 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+        }
+
+        .list-group-item:hover {
+            background-color: rgb(241, 237, 237);
+        }
+    </style>
 </head>
 
 <body>
@@ -36,7 +64,7 @@
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center d-block d-lg-none">
 
-                    <a href="{{route('cart.index')}}" class="btn px-0 ml-2">
+                    <a href="{{ route('cart.index') }}" class="btn px-0 ml-2">
                         <i class="fas fa-shopping-cart text-dark"></i>
                         <span class="badge text-dark border border-dark rounded-circle"
                             style="padding-bottom: 2px;">{{ count($cart['products'] ?? []) }}</span>
@@ -52,16 +80,19 @@
                 </a>
             </div>
             <div class="col-lg-4 col-6 text-left">
-                <form action="">
+                <form action="{{ route('type.search') }}" method="GET">
+                    @csrf
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
+                        <input type="text" class="form-control" id="search-bar" name="search"
+                            placeholder="Search for products">
                         <div class="input-group-append">
                             <span class="input-group-text bg-transparent text-primary">
-                                <i class="fa fa-search"></i>
+                                <button type="submit"><i class="fa fa-search"></i></button>
                             </span>
                         </div>
                     </div>
                 </form>
+                <div id="search-results" class=""></div>
             </div>
             <div class="col-lg-4 col-6 text-right">
                 <p class="m-0">Customer Service</p>
@@ -105,14 +136,14 @@
                             <a href="{{ route('home') }}"
                                 class="nav-item nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
                             <a href="{{ route('products.shop') }}"
-                                class="nav-item nav-link {{ request()->routeIs('products.shop' , 'category.show') ? 'active' : '' }}">Shop</a>
-                            <a href="{{route('category.shop')}}"
+                                class="nav-item nav-link {{ request()->routeIs('products.shop', 'category.show') ? 'active' : '' }}">Shop</a>
+                            <a href="{{ route('category.shop') }}"
                                 class="nav-item nav-link {{ request()->routeIs('category.shop') ? 'active' : '' }}">Categories</a>
 
 
                         </div>
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
-                            <a href="{{route('cart.index')}}" class="btn px-0 ml-3">
+                            <a href="{{ route('cart.index') }}" class="btn px-0 ml-3">
                                 <i class="fas fa-shopping-cart text-primary"></i>
                                 <span class="badge text-secondary border border-secondary rounded-circle"
                                     id="cart-item-counter"
@@ -270,6 +301,85 @@
         <!-- Template Javascript -->
         <script src="{{ asset('theme/js/main.js') }}"></script>
         @yield('js')
+
+        <script>
+            $(document).ready(function() {
+                $('#search-bar').on('input', function() {
+                    let query = $(this).val();
+
+                    if (query.length > 2) {
+                        $.ajax({
+                            url: "{{ route('type.search') }}",
+                            type: "GET",
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                search: query
+                            },
+                            success: function(response) {
+                                let resultsHtml = '<div class=" show-search-box">';
+
+                                // Categories section
+                                if (response.categories.length > 0) {
+                                    resultsHtml +=
+                                        `<h5 class="mt-1">Categories</h5><ul class="list-group">`;
+
+                                    response.categories.forEach(category => {
+                                        let actionUrl =
+                                            "{{ route('search.category.show', ':id') }}"
+                                            .replace(':id', category.id);
+
+                                        resultsHtml += `
+                                    <a href="${actionUrl}">
+                                        <li class="list-group-item">
+                                            <strong>${category.name}</strong><br>
+                                        </li>
+                                    </a>
+                            `;
+                                    });
+                                    resultsHtml += `</ul>`;
+                                }
+
+                                // Products section
+                                if (response.products.length > 0) {
+                                    resultsHtml +=
+                                        `<h5 class="mt-4">Products</h5><ul class="list-group">`;
+
+                                    response.products.forEach(product => {
+                                        let actionUrl =
+                                            "{{ route('search.product.show', ':id') }}"
+                                            .replace(':id', product.id);
+
+                                        resultsHtml += `
+                                            <a href="${actionUrl}">
+                                                <li class="list-group-item">
+                                                    <strong>${product.name}</strong><br>
+                                                </li>
+                                            </a>
+                                        `;
+                                    });
+                                    resultsHtml += `</ul>`;
+                                }
+                                resultsHtml += `</div>`;
+                                // Show the results or display a "No results" message
+                                if (resultsHtml === '') {
+                                    resultsHtml =
+                                        '<li class="list-group-item">No results found.</li>';
+                                }
+
+                                $('#search-results').html(resultsHtml).show();
+                            }
+                        });
+                    } else {
+                        $('#search-results').hide();
+                    }
+                });
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('#search-bar, #search-results').length) {
+                        $('#search-results').hide();
+                    }
+                });
+            })
+        </script>
 </body>
 
 </html>
