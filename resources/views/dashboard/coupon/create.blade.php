@@ -23,8 +23,8 @@
                         </div>
                         <div class="form-group">
                             <label for="image">Discount Amount</label>
-                            <input type="number" max="99" maxlength="2" class="form-control" name="discount_amount" id="coupon" placeholder="%amount" value="{{old('discount_amount')}}" required>
-                            <p style="font-size: 12px">you will input an amount which will be count it with hundred percent (%)</p>
+                            <input type="number"  maxlength="3" class="form-control" name="discount_amount" id="coupon" placeholder="$amount" value="{{old('discount_amount')}}" required>
+                            <p style="font-size: 12px">you will input an amount which will be in dollar ($)</p>
                           </div>
                           <input type="hidden" name="status" value="1">
                         <button type="submit" class="btn btn-success">Create</button>

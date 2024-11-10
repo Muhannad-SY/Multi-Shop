@@ -102,7 +102,6 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     @foreach ($product->reviews as $review)
-                                        <h4 class="mb-4">{{ $loop->index + 1 }} review for "Product Name"</h4>
                                         <div class="media mb-4">
                                             <img src="{{ asset('theme/img/user.jpg') }}" alt="Image"
                                                 class="img-fluid mr-3 mt-1" style="width: 45px;">

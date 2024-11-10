@@ -26,7 +26,9 @@ class ProductController extends Controller
     {
         $filter_case = 0;
 
-        $products = Product::withCount('order__details')->where('status' , '>' , 0)->get();
+        $products = Product::withCount('order__details')->whereHas('category', function ($query) {
+            $query->where('status', '>', 0);
+        })->where('status' , '>' , 0)->get();
         $categories = Category::where('status' , '>' , 0)->get();
         $cart = json_decode(Cookie::get('cart', '[]'), true);
         return view('theme.product.index', compact('products', 'cart' , 'categories' , 'filter_case'));
@@ -86,7 +88,7 @@ class ProductController extends Controller
             'price' => 'required|int',
             'discount_price' => 'sometimes',
             'stock' => 'required|string',
-            'product_images.*' => 'required|image|mimes:png,jpg,jpeg',
+            'product_images.*' => 'required|image|mimes:png,jpg,jpeg,webp',
         ]);
 
         $product = Product::create($request->all());
@@ -141,7 +143,7 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|int',
             'stock' => 'required|string',
-            'product_images.*' => 'sometimes|required|image|mimes:png,jpg,jpeg',
+            'product_images.*' => 'sometimes|required|image|mimes:png,jpg,jpeg,webp',
             // max:2048|',
         ]);
         $product->update($request->all());

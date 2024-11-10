@@ -35,7 +35,9 @@ class HomeController extends Controller
                 $categories = Category::withCount('products')
                     ->where('status', '>', 0) // Filter categories with status = 1
                     ->get();
-                $products = Product::withCount('order__details')->where('status', '>', 0)->get();
+                $products = Product::withCount('order__details')->whereHas('category', function ($query) {
+                    $query->where('status', '>', 0);
+                })->where('status', '>', 0)->get();
                 $cart = json_decode(Cookie::get('cart', '[]'), true);
 
                 return view('welcome', compact('categories', 'products' , 'cart'));
@@ -44,7 +46,9 @@ class HomeController extends Controller
             $categories = Category::withCount('products')
                 ->where('status', '>', 0) // Filter categories with status = 1
                 ->get();
-            $products = Product::withCount('order__details')->where('status', '>', 0)->get();
+            $products = Product::withCount('order__details')->whereHas('category', function ($query) {
+                $query->where('status', '>', 0);
+            })->where('status', '>', 0)->get();
             $cart = json_decode(Cookie::get('cart', '[]'), true);
             return view('welcome', compact('categories', 'products' , 'cart'));
         }

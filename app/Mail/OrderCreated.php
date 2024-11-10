@@ -34,7 +34,7 @@ class OrderCreated extends Mailable
             $this->subtotal += $item->price * $item->quanity;
         }
 
-        $this->coupon = $order->coupon->discount_amount;
+        $this->coupon = $order->coupon->discount_amount ?? 0;
         $this->address = $order->address->adreess;
         $this->zip_code = $order->address->zip_code;
         $this->products = $products;

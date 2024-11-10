@@ -31,19 +31,14 @@
     <style>
         .show-search-box {
             position: absolute;
-            /* Position it relative to its closest positioned ancestor */
-            top: 50px;
+            top: 40px;
             margin: 0;
             padding: 15px;
-            /* Adjust as needed */
-            text-align: center;  
-            /* Adjust as needed */
-            width: 30%;
-            height: flex;
+            width: 90%;
+            height: auto;
             background-color: rgb(250, 249, 249);
-            /* Semi-transparent overlay */
             z-index: 10;
-            /* Higher z-index to stay on top */
+
         }
 
         .list-group-item {
@@ -80,18 +75,17 @@
                 </a>
             </div>
             <div class="col-lg-4 col-6 text-left">
-                <form action="{{ route('type.search') }}" method="GET">
-                    @csrf
+                
                     <div class="input-group">
                         <input type="text" class="form-control" id="search-bar" name="search"
                             placeholder="Search for products">
                         <div class="input-group-append">
                             <span class="input-group-text bg-transparent text-primary">
-                                <button type="submit"><i class="fa fa-search"></i></button>
+                                <i class="fa fa-search"></i>
                             </span>
                         </div>
                     </div>
-                </form>
+                
                 <div id="search-results" class=""></div>
             </div>
             <div class="col-lg-4 col-6 text-right">
